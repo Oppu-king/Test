@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: lakshmi-ai-wife
+    env: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./Dockerfil
