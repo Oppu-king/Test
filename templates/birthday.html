@@ -363,6 +363,92 @@
             cursor: pointer;
         }
 
+        /* ENHANCED GALLERY STYLES */
+        .photo-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .photo-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(255, 107, 157, 0.3);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .photo-info {
+            padding: 15px;
+            background: linear-gradient(135deg, var(--love-pink), var(--love-purple));
+            color: white;
+        }
+
+        .photo-date {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .photo-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .photo-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .photo-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        /* UPLOAD PROGRESS */
+        .upload-progress {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--love-pink), var(--love-purple));
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            z-index: 10001;
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
         /* RESPONSIVE DESIGN */
         @media (max-width: 768px) {
             .hero-title {
@@ -444,9 +530,64 @@
             0%, 100% { transform: translate(-50%, -50%) scale(1); }
             50% { transform: translate(-50%, -50%) scale(1.05); }
         }
+
+        /* PERSISTENT MUSIC PLAYER */
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--love-pink), var(--love-purple));
+            color: white;
+            padding: 15px 20px;
+            border-radius: 50px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .music-player:hover {
+            transform: scale(1.05);
+        }
+
+        .music-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .music-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .music-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
     </style>
 </head>
 <body>
+    <!-- Persistent Music Player -->
+    <div class="music-player" id="musicPlayer">
+        <div style="font-size: 1.5rem; animation: pulse 2s infinite;">🎵</div>
+        <div>
+            <div style="font-size: 14px; font-weight: bold;">Happy Birthday Song</div>
+            <div style="font-size: 12px; opacity: 0.9;">Playing for Nipa ✨</div>
+        </div>
+        <div class="music-controls">
+            <button class="music-btn" onclick="toggleMusic()" id="playPauseBtn">⏸️</button>
+            <button class="music-btn" onclick="replayMusic()">🔄</button>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="header">
         <div class="header-content">
@@ -539,7 +680,7 @@
             <div class="feature-card glass love-animation">
                 <span class="feature-icon">📸</span>
                 <h3 class="feature-title">Photo Gallery</h3>
-                <p class="feature-description">Upload, view, and manage beautiful memories</p>
+                <p class="feature-description">Upload multiple photos and store memories forever</p>
                 <button class="feature-btn" onclick="openGallery()">Open Gallery</button>
             </div>
             
@@ -702,6 +843,11 @@
     </div>
 
     <script>
+        // Global variables
+        let currentAudio = null;
+        let isPlaying = false;
+        let birthdayMusicContext = null;
+
         // Initialize everything
         document.addEventListener('DOMContentLoaded', function() {
             updateCountdown();
@@ -734,7 +880,7 @@
             }
         }
 
-        // AUTO-PLAY BIRTHDAY MUSIC FUNCTION
+        // ENHANCED AUTO-PLAY BIRTHDAY MUSIC FUNCTION
         function playAutoBirthdayMusic() {
             // Show music notification
             const musicNotification = document.createElement('div');
@@ -748,7 +894,7 @@
             document.body.appendChild(musicNotification);
 
             // Create and play the complete Happy Birthday song
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            birthdayMusicContext = new (window.AudioContext || window.webkitAudioContext)();
             
             // Complete Happy Birthday melody with proper timing
             const happyBirthdayMelody = [
@@ -786,15 +932,15 @@
                 { note: 349.23, duration: 3.0 }   // F - You
             ];
 
-            let currentTime = audioContext.currentTime + 0.1;
+            let currentTime = birthdayMusicContext.currentTime + 0.1;
             
             // Play each note in the melody
             happyBirthdayMelody.forEach((noteData, index) => {
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
+                const oscillator = birthdayMusicContext.createOscillator();
+                const gainNode = birthdayMusicContext.createGain();
                 
                 oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
+                gainNode.connect(birthdayMusicContext.destination);
                 
                 oscillator.frequency.setValueAtTime(noteData.note, currentTime);
                 oscillator.type = 'sine';
@@ -810,6 +956,9 @@
                 
                 currentTime += noteData.duration * 0.6; // Adjust timing between notes
             });
+
+            isPlaying = true;
+            document.getElementById('playPauseBtn').textContent = '⏸️';
 
             // Create visual effects during the song
             createBirthdayFireworks();
@@ -839,48 +988,274 @@
                 if (document.body.contains(musicNotification)) {
                     musicNotification.remove();
                 }
+                isPlaying = false;
+                document.getElementById('playPauseBtn').textContent = '▶️';
                 showNotification('🎵 Happy Birthday song completed! Welcome to Nipa\'s Birthday Sanctuary! 🎂');
             }, 20000);
         }
 
-        // Real Gallery Functions
+        // Music Player Controls
+        function toggleMusic() {
+            if (isPlaying) {
+                // Pause music
+                if (birthdayMusicContext) {
+                    birthdayMusicContext.suspend();
+                }
+                isPlaying = false;
+                document.getElementById('playPauseBtn').textContent = '▶️';
+                showNotification('⏸️ Music paused');
+            } else {
+                // Resume or start music
+                if (birthdayMusicContext && birthdayMusicContext.state === 'suspended') {
+                    birthdayMusicContext.resume();
+                } else {
+                    playAutoBirthdayMusic();
+                }
+                isPlaying = true;
+                document.getElementById('playPauseBtn').textContent = '⏸️';
+                showNotification('▶️ Music playing');
+            }
+        }
+
+        function replayMusic() {
+            // Stop current music
+            if (birthdayMusicContext) {
+                birthdayMusicContext.close();
+            }
+            isPlaying = false;
+            
+            // Start new music
+            setTimeout(() => {
+                playAutoBirthdayMusic();
+            }, 500);
+            
+            showNotification('🔄 Replaying birthday song!');
+        }
+
+        // ENHANCED GALLERY FUNCTIONS WITH SERVER INTEGRATION
         function openGallery() {
             const modal = document.createElement('div');
             modal.className = 'modal show';
             modal.innerHTML = `
-                <div class="modal-content glass" style="max-width: 90%; max-height: 90%;">
+                <div class="modal-content glass" style="max-width: 95%; max-height: 95%; padding: 30px;">
                     <button class="modal-close" onclick="this.parentElement.parentElement.remove()">&times;</button>
-                    <h3 class="feature-title">📸 Photo Gallery</h3>
-                    <div style="margin: 20px 0;">
-                        <button class="feature-btn" onclick="uploadPhoto()" style="margin: 10px;">📸 Upload Photo</button>
-                        <button class="feature-btn" onclick="takePhoto()" style="margin: 10px;">📷 Take Photo</button>
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h3 class="feature-title" style="font-size: 2.5rem; margin-bottom: 15px;">📸 Nipa's Beautiful Gallery 📸</h3>
+                        <p style="color: var(--love-pink); font-size: 1.2rem;">Capture and store your precious memories forever! ✨</p>
                     </div>
-                    <div id="photoGallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; max-height: 400px; overflow-y: auto;"></div>
+                    
+                    <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap;">
+                        <button class="feature-btn" onclick="uploadMultiplePhotos()" style="padding: 15px 25px; font-size: 16px; background: linear-gradient(135deg, var(--love-pink), var(--love-purple));">
+                            📸 Upload Multiple Photos
+                        </button>
+                        <button class="feature-btn" onclick="takePhoto()" style="padding: 15px 25px; font-size: 16px; background: linear-gradient(135deg, var(--love-gold), var(--love-coral));">
+                            📷 Take Photo
+                        </button>
+                        <button class="feature-btn" onclick="loadGalleryFromServer()" style="padding: 15px 25px; font-size: 16px; background: linear-gradient(135deg, var(--love-mint), var(--love-lavender));">
+                            🔄 Refresh Gallery
+                        </button>
+                    </div>
+                    
+                    <div id="galleryStats" style="text-align: center; margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 15px;">
+                        <span style="color: var(--love-pink); font-weight: bold;">Loading gallery...</span>
+                    </div>
+                    
+                    <div id="photoGallery" style="
+                        display: grid; 
+                        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+                        gap: 20px; 
+                        max-height: 500px; 
+                        overflow-y: auto; 
+                        padding: 20px;
+                        background: rgba(255,255,255,0.05);
+                        border-radius: 20px;
+                        border: 2px solid rgba(255,255,255,0.1);
+                    "></div>
                 </div>
             `;
             document.body.appendChild(modal);
+            
+            // Load existing photos from server
+            loadGalleryFromServer();
         }
 
-        function uploadPhoto() {
+        function uploadMultiplePhotos() {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
             input.multiple = true;
             input.onchange = (e) => {
-                Array.from(e.target.files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        const img = document.createElement('img');
-                        img.src = event.target.result;
-                        img.style.cssText = 'width: 100%; height: 150px; object-fit: cover; border-radius: 10px; cursor: pointer;';
-                        img.onclick = () => viewPhoto(event.target.result);
-                        document.getElementById('photoGallery').appendChild(img);
-                    };
-                    reader.readAsDataURL(file);
+                const files = Array.from(e.target.files);
+                if (files.length === 0) return;
+                
+                // Show upload progress
+                const progressModal = document.createElement('div');
+                progressModal.className = 'upload-progress';
+                progressModal.innerHTML = `
+                    <h3 style="margin-bottom: 15px;">📸 Uploading Photos</h3>
+                    <p id="uploadStatus">Uploading ${files.length} photo(s)...</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                    </div>
+                    <p id="uploadCount">0 / ${files.length} completed</p>
+                `;
+                document.body.appendChild(progressModal);
+                
+                let uploadedCount = 0;
+                let successCount = 0;
+                
+                files.forEach((file, index) => {
+                    // Upload to server
+                    const formData = new FormData();
+                    formData.append('photo', file);
+                    
+                    fetch('/upload-photo', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        uploadedCount++;
+                        if (data.success) {
+                            successCount++;
+                            addPhotoToGallery(data.photo);
+                        }
+                        
+                        // Update progress
+                        const progress = (uploadedCount / files.length) * 100;
+                        document.getElementById('progressFill').style.width = progress + '%';
+                        document.getElementById('uploadCount').textContent = `${uploadedCount} / ${files.length} completed`;
+                        
+                        if (uploadedCount === files.length) {
+                            setTimeout(() => {
+                                progressModal.remove();
+                                showNotification(`✅ ${successCount} photos uploaded successfully!`);
+                                updateGalleryStats();
+                            }, 1000);
+                        }
+                    })
+                    .catch(error => {
+                        uploadedCount++;
+                        console.error('Upload error:', error);
+                        
+                        // Update progress even on error
+                        const progress = (uploadedCount / files.length) * 100;
+                        document.getElementById('progressFill').style.width = progress + '%';
+                        document.getElementById('uploadCount').textContent = `${uploadedCount} / ${files.length} completed`;
+                        
+                        if (uploadedCount === files.length) {
+                            setTimeout(() => {
+                                progressModal.remove();
+                                showNotification(`⚠️ ${successCount} photos uploaded, ${files.length - successCount} failed`);
+                                updateGalleryStats();
+                            }, 1000);
+                        }
+                    });
                 });
-                showNotification('📸 Photos uploaded successfully!');
             };
             input.click();
+        }
+
+        function loadGalleryFromServer() {
+            fetch('/gallery')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const gallery = document.getElementById('photoGallery');
+                    if (gallery) {
+                        gallery.innerHTML = '';
+                        data.photos.forEach(photo => {
+                            addPhotoToGallery(photo);
+                        });
+                        updateGalleryStats(data.count);
+                    }
+                } else {
+                    showNotification('❌ Failed to load gallery');
+                }
+            })
+            .catch(error => {
+                console.error('Gallery load error:', error);
+                showNotification('❌ Error loading gallery');
+            });
+        }
+
+        function addPhotoToGallery(photo) {
+            const gallery = document.getElementById('photoGallery');
+            if (!gallery) return;
+            
+            const photoItem = document.createElement('div');
+            photoItem.className = 'photo-item';
+            photoItem.innerHTML = `
+                <img src="${photo.url}" alt="${photo.original_name}" onclick="viewPhoto('${photo.url}', '${photo.original_name}')">
+                <div class="photo-info">
+                    <div style="font-weight: bold; margin-bottom: 5px;">${photo.original_name}</div>
+                    <div class="photo-date">${photo.display_date || photo.upload_date}</div>
+                    <div class="photo-actions">
+                        <button class="photo-btn" onclick="downloadPhoto('${photo.url}', '${photo.original_name}')">💾 Download</button>
+                        <button class="photo-btn" onclick="deletePhoto('${photo.id}', this.closest('.photo-item'))">🗑️ Delete</button>
+                        <button class="photo-btn" onclick="sharePhoto('${photo.url}')">📤 Share</button>
+                    </div>
+                </div>
+            `;
+            gallery.appendChild(photoItem);
+        }
+
+        function updateGalleryStats(count = null) {
+            const statsElement = document.getElementById('galleryStats');
+            if (statsElement) {
+                if (count !== null) {
+                    statsElement.innerHTML = `
+                        <span style="color: var(--love-pink); font-weight: bold;">
+                            📸 ${count} photos in gallery ✨
+                        </span>
+                    `;
+                } else {
+                    // Count current photos in display
+                    const photoCount = document.querySelectorAll('.photo-item').length;
+                    statsElement.innerHTML = `
+                        <span style="color: var(--love-pink); font-weight: bold;">
+                            📸 ${photoCount} photos in gallery ✨
+                        </span>
+                    `;
+                }
+            }
+        }
+
+        function deletePhoto(photoId, photoElement) {
+            if (confirm('Are you sure you want to delete this photo?')) {
+                fetch(`/delete-photo/${photoId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        photoElement.remove();
+                        updateGalleryStats();
+                        showNotification('🗑️ Photo deleted successfully!');
+                    } else {
+                        showNotification('❌ Failed to delete photo');
+                    }
+                })
+                .catch(error => {
+                    console.error('Delete error:', error);
+                    showNotification('❌ Error deleting photo');
+                });
+            }
+        }
+
+        function sharePhoto(photoUrl) {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Nipa\'s Birthday Photo',
+                    text: 'Check out this beautiful photo from Nipa\'s birthday celebration!',
+                    url: photoUrl
+                });
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(window.location.origin + photoUrl).then(() => {
+                    showNotification('📤 Photo link copied to clipboard!');
+                });
+            }
         }
 
         function takePhoto() {
@@ -914,19 +1289,29 @@
             const ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0);
             
-            const dataURL = canvas.toDataURL('image/png');
-            const img = document.createElement('img');
-            img.src = dataURL;
-            img.style.cssText = 'width: 100%; height: 150px; object-fit: cover; border-radius: 10px; cursor: pointer;';
-            img.onclick = () => viewPhoto(dataURL);
-            
-            if (document.getElementById('photoGallery')) {
-                document.getElementById('photoGallery').appendChild(img);
-            }
+            // Convert to blob and upload
+            canvas.toBlob(blob => {
+                const formData = new FormData();
+                formData.append('photo', blob, `camera_photo_${Date.now()}.png`);
+                
+                fetch('/upload-photo', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        addPhotoToGallery(data.photo);
+                        updateGalleryStats();
+                        showNotification('📸 Photo captured and saved!');
+                    } else {
+                        showNotification('❌ Failed to save photo');
+                    }
+                });
+            }, 'image/png');
             
             stopCamera();
             document.querySelector('.modal.show').remove();
-            showNotification('📸 Photo captured and added to gallery!');
         }
 
         function stopCamera() {
@@ -935,24 +1320,25 @@
             }
         }
 
-        function viewPhoto(src) {
+        function viewPhoto(src, name) {
             const modal = document.createElement('div');
             modal.className = 'modal show';
             modal.innerHTML = `
-                <div class="modal-content glass">
+                <div class="modal-content glass" style="max-width: 90%; max-height: 90%;">
                     <button class="modal-close" onclick="this.parentElement.parentElement.remove()">&times;</button>
+                    <h3 style="margin-bottom: 20px;">${name}</h3>
                     <img src="${src}" style="max-width: 100%; max-height: 70vh; border-radius: 15px;">
                     <br><br>
-                    <button class="feature-btn" onclick="downloadPhoto('${src}')">💾 Download</button>
+                    <button class="feature-btn" onclick="downloadPhoto('${src}', '${name}')">💾 Download</button>
                 </div>
             `;
             document.body.appendChild(modal);
         }
 
-        function downloadPhoto(src) {
+        function downloadPhoto(src, name) {
             const link = document.createElement('a');
             link.href = src;
-            link.download = `photo_${Date.now()}.png`;
+            link.download = name || `photo_${Date.now()}.png`;
             link.click();
             showNotification('💾 Photo downloaded!');
         }
@@ -1083,6 +1469,7 @@
                             <button class="feature-btn" onclick="addEmoji('🎈')">🎈</button>
                             <button class="feature-btn" onclick="addEmoji('⭐')">⭐</button>
                             <button class="feature-btn" onclick="downloadArt()">💾 Download</button>
+                            <button class="feature-btn" onclick="saveArtwork()">💾 Save to Server</button>
                         </div>
                     </div>
                 </div>
@@ -1140,6 +1527,37 @@
             link.href = canvas.toDataURL();
             link.click();
             showNotification('🎨 Artwork downloaded!');
+        }
+
+        function saveArtwork() {
+            const canvas = document.getElementById('artCanvas');
+            const artworkData = canvas.toDataURL();
+            const title = prompt('Enter artwork title:', `Birthday Art ${new Date().toLocaleDateString()}`);
+            
+            if (title) {
+                fetch('/save-artwork', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        artwork: artworkData,
+                        title: title
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('🎨 Artwork saved to server!');
+                    } else {
+                        showNotification('❌ Failed to save artwork');
+                    }
+                })
+                .catch(error => {
+                    console.error('Save error:', error);
+                    showNotification('❌ Error saving artwork');
+                });
+            }
         }
 
         // Real Games Function
@@ -1279,28 +1697,44 @@
             document.body.appendChild(modal);
         }
 
-        let currentAudio = null;
-
         function playBirthdayMusic() {
             // Play the same complete birthday song as auto-play
             playAutoBirthdayMusic();
         }
 
         function stopBirthdayMusic() {
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio = null;
+            if (birthdayMusicContext) {
+                birthdayMusicContext.close();
+                birthdayMusicContext = null;
             }
+            isPlaying = false;
+            document.getElementById('playPauseBtn').textContent = '▶️';
             showNotification('⏹️ Music stopped');
         }
 
         function uploadMusic(event) {
             const file = event.target.files[0];
             if (file) {
-                const url = URL.createObjectURL(file);
-                currentAudio = new Audio(url);
-                document.getElementById('currentSong').textContent = file.name;
-                showNotification('🎵 Music uploaded successfully!');
+                const formData = new FormData();
+                formData.append('music', file);
+                
+                fetch('/upload-music', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('currentSong').textContent = data.music.original_name;
+                        showNotification('🎵 Music uploaded successfully!');
+                    } else {
+                        showNotification('❌ Failed to upload music');
+                    }
+                })
+                .catch(error => {
+                    console.error('Upload error:', error);
+                    showNotification('❌ Error uploading music');
+                });
             }
         }
 
@@ -1319,28 +1753,92 @@
                         </div>
                     </div>
                     <div>
+                        <input type="text" id="authorName" placeholder="Your name..." style="width: 100%; padding: 10px; border-radius: 10px; border: none; background: rgba(255,255,255,0.1); color: white; margin-bottom: 10px;">
                         <textarea id="newMessage" placeholder="Write a birthday message..." style="width: 100%; height: 80px; padding: 10px; border-radius: 10px; border: none; background: rgba(255,255,255,0.1); color: white; margin-bottom: 10px;"></textarea>
                         <button class="feature-btn" onclick="addMessage()">💌 Send Message</button>
+                        <button class="feature-btn" onclick="loadMessages()">🔄 Refresh</button>
                     </div>
                 </div>
             `;
             document.body.appendChild(modal);
+            loadMessages();
         }
 
         function addMessage() {
-            const messageText = document.getElementById('newMessage').value;
-            if (messageText.trim()) {
-                const messagesList = document.getElementById('messagesList');
-                const messageDiv = document.createElement('div');
-                messageDiv.style.cssText = 'padding: 15px; margin: 10px 0; background: rgba(255,255,255,0.1); border-radius: 15px;';
-                messageDiv.innerHTML = `
-                    <p>"${messageText}"</p>
-                    <small style="color: var(--love-pink);">- ${new Date().toLocaleString()}</small>
-                `;
-                messagesList.appendChild(messageDiv);
-                document.getElementById('newMessage').value = '';
-                showNotification('💌 Message added successfully!');
+            const messageText = document.getElementById('newMessage').value.trim();
+            const author = document.getElementById('authorName').value.trim() || 'Anonymous';
+            
+            if (messageText) {
+                fetch('/save-message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: messageText,
+                        author: author
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('newMessage').value = '';
+                        document.getElementById('authorName').value = '';
+                        loadMessages();
+                        showNotification('💌 Message sent successfully!');
+                    } else {
+                        showNotification('❌ Failed to send message');
+                    }
+                })
+                .catch(error => {
+                    console.error('Message error:', error);
+                    showNotification('❌ Error sending message');
+                });
             }
+        }
+
+        function loadMessages() {
+            fetch('/messages')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const messagesList = document.getElementById('messagesList');
+                    if (messagesList) {
+                        messagesList.innerHTML = '';
+                        data.messages.forEach(msg => {
+                            const messageDiv = document.createElement('div');
+                            messageDiv.style.cssText = 'padding: 15px; margin: 10px 0; background: rgba(255,255,255,0.1); border-radius: 15px;';
+                            messageDiv.innerHTML = `
+                                <p>"${msg.message}"</p>
+                                <small style="color: var(--love-pink);">- ${msg.author} (${msg.date_display})</small>
+                                <div style="margin-top: 10px;">
+                                    <button class="photo-btn" onclick="likeMessage('${msg.id}')">❤️ ${msg.likes || 0}</button>
+                                </div>
+                            `;
+                            messagesList.appendChild(messageDiv);
+                        });
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Load messages error:', error);
+            });
+        }
+
+        function likeMessage(messageId) {
+            fetch(`/like-message/${messageId}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadMessages(); // Refresh to show updated likes
+                    showNotification('❤️ Message liked!');
+                }
+            })
+            .catch(error => {
+                console.error('Like error:', error);
+            });
         }
 
         // Real Birthday Celebration Functions
@@ -1507,5 +2005,5 @@
             showNotification(`💕 Love Calculator: ${percentage}% Perfect Match!`);
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'976d40c367fd3e45',t:'MTc1NjQ4MzE0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'976d8a8a810780bb',t:'MTc1NjQ4NjE2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
