@@ -58,11 +58,11 @@ def health_check():
         'message': 'Nipa\'s Birthday Website is running!'
     })
 
-# ==================== PHOTO GALLERY ROUTES ====================
+# ==================== ENHANCED PHOTO GALLERY ROUTES ====================
 
 @app.route('/upload-photo', methods=['POST'])
 def upload_photo():
-    """Upload photo to gallery"""
+    """Upload photo to gallery with enhanced features"""
     try:
         if 'photo' not in request.files:
             return jsonify({'error': 'No photo uploaded'}), 400
@@ -85,7 +85,7 @@ def upload_photo():
         # Save file
         file.save(file_path)
         
-        # Save to gallery data
+        # Save to gallery data with enhanced metadata
         gallery = load_json_file(GALLERY_FILE)
         photo_data = {
             'id': str(uuid.uuid4()),
@@ -94,7 +94,9 @@ def upload_photo():
             'upload_date': datetime.now().isoformat(),
             'display_date': datetime.now().strftime('%B %d, %Y at %I:%M %p'),
             'url': f'/uploads/photos/{unique_filename}',
-            'size': os.path.getsize(file_path)
+            'size': os.path.getsize(file_path),
+            'views': 0,
+            'likes': 0
         }
         gallery.append(photo_data)
         save_json_file(GALLERY_FILE, gallery)
@@ -110,12 +112,17 @@ def upload_photo():
 
 @app.route('/gallery')
 def get_gallery():
-    """Get all photos in gallery"""
+    """Get all photos in gallery with stats"""
     gallery = load_json_file(GALLERY_FILE)
+    # Sort by upload date, newest first
+    gallery.sort(key=lambda x: x.get('upload_date', ''), reverse=True)
+    
     return jsonify({
         'success': True,
         'photos': gallery,
-        'count': len(gallery)
+        'count': len(gallery),
+        'total_size': sum(photo.get('size', 0) for photo in gallery),
+        'total_views': sum(photo.get('views', 0) for photo in gallery)
     })
 
 @app.route('/delete-photo/<photo_id>', methods=['DELETE'])
@@ -147,11 +154,31 @@ def delete_photo(photo_id):
     except Exception as e:
         return jsonify({'error': f'Delete failed: {str(e)}'}), 500
 
-# ==================== MESSAGES ROUTES ====================
+@app.route('/like-photo/<photo_id>', methods=['POST'])
+def like_photo(photo_id):
+    """Like a photo"""
+    try:
+        gallery = load_json_file(GALLERY_FILE)
+        
+        for photo in gallery:
+            if photo['id'] == photo_id:
+                photo['likes'] = photo.get('likes', 0) + 1
+                save_json_file(GALLERY_FILE, gallery)
+                return jsonify({
+                    'success': True,
+                    'likes': photo['likes']
+                })
+        
+        return jsonify({'error': 'Photo not found'}), 404
+        
+    except Exception as e:
+        return jsonify({'error': f'Like failed: {str(e)}'}), 500
+
+# ==================== ENHANCED MESSAGES ROUTES ====================
 
 @app.route('/save-message', methods=['POST'])
 def save_message():
-    """Save birthday message"""
+    """Save birthday message with enhanced features"""
     try:
         data = request.get_json()
         message_text = data.get('message', '').strip()
@@ -167,7 +194,8 @@ def save_message():
             'author': author,
             'timestamp': datetime.now().isoformat(),
             'date_display': datetime.now().strftime('%B %d, %Y at %I:%M %p'),
-            'likes': 0
+            'likes': 0,
+            'is_wish': data.get('is_wish', False)
         }
         
         messages.append(new_message)
@@ -191,7 +219,8 @@ def get_messages():
     return jsonify({
         'success': True,
         'messages': messages,
-        'count': len(messages)
+        'count': len(messages),
+        'total_likes': sum(msg.get('likes', 0) for msg in messages)
     })
 
 @app.route('/like-message/<message_id>', methods=['POST'])
@@ -214,31 +243,11 @@ def like_message(message_id):
     except Exception as e:
         return jsonify({'error': f'Like failed: {str(e)}'}), 500
 
-@app.route('/delete-message/<message_id>', methods=['DELETE'])
-def delete_message(message_id):
-    """Delete birthday message"""
-    try:
-        messages = load_json_file(MESSAGES_FILE)
-        
-        for i, message in enumerate(messages):
-            if message['id'] == message_id:
-                messages.pop(i)
-                save_json_file(MESSAGES_FILE, messages)
-                return jsonify({
-                    'success': True,
-                    'message': 'Message deleted successfully!'
-                })
-        
-        return jsonify({'error': 'Message not found'}), 404
-        
-    except Exception as e:
-        return jsonify({'error': f'Delete failed: {str(e)}'}), 500
-
-# ==================== ARTWORK ROUTES ====================
+# ==================== ENHANCED ARTWORK ROUTES ====================
 
 @app.route('/save-artwork', methods=['POST'])
 def save_artwork():
-    """Save digital artwork"""
+    """Save digital artwork with metadata"""
     try:
         data = request.get_json()
         artwork_data = data.get('artwork')
@@ -255,7 +264,8 @@ def save_artwork():
             'created_date': datetime.now().isoformat(),
             'display_date': datetime.now().strftime('%B %d, %Y at %I:%M %p'),
             'data': artwork_data,
-            'likes': 0
+            'likes': 0,
+            'views': 0
         }
         
         artworks.append(artwork_info)
@@ -282,31 +292,11 @@ def get_artworks():
         'count': len(artworks)
     })
 
-@app.route('/delete-artwork/<artwork_id>', methods=['DELETE'])
-def delete_artwork(artwork_id):
-    """Delete artwork"""
-    try:
-        artworks = load_json_file(ARTWORK_FILE)
-        
-        for i, artwork in enumerate(artworks):
-            if artwork['id'] == artwork_id:
-                artworks.pop(i)
-                save_json_file(ARTWORK_FILE, artworks)
-                return jsonify({
-                    'success': True,
-                    'message': 'Artwork deleted successfully!'
-                })
-        
-        return jsonify({'error': 'Artwork not found'}), 404
-        
-    except Exception as e:
-        return jsonify({'error': f'Delete failed: {str(e)}'}), 500
-
-# ==================== MUSIC ROUTES ====================
+# ==================== ENHANCED MUSIC ROUTES ====================
 
 @app.route('/upload-music', methods=['POST'])
 def upload_music():
-    """Upload music file"""
+    """Upload music file with enhanced features"""
     try:
         if 'music' not in request.files:
             return jsonify({'error': 'No music file uploaded'}), 400
@@ -339,7 +329,8 @@ def upload_music():
             'display_date': datetime.now().strftime('%B %d, %Y at %I:%M %p'),
             'url': f'/uploads/music/{unique_filename}',
             'size': os.path.getsize(file_path),
-            'plays': 0
+            'plays': 0,
+            'likes': 0
         }
         music_files.append(music_data)
         save_json_file(MUSIC_FILE, music_files)
@@ -360,64 +351,11 @@ def get_music():
     return jsonify({
         'success': True,
         'music': music_files,
-        'count': len(music_files)
+        'count': len(music_files),
+        'total_plays': sum(music.get('plays', 0) for music in music_files)
     })
 
-@app.route('/play-music/<music_id>', methods=['POST'])
-def play_music(music_id):
-    """Increment play count for music"""
-    try:
-        music_files = load_json_file(MUSIC_FILE)
-        
-        for music in music_files:
-            if music['id'] == music_id:
-                music['plays'] = music.get('plays', 0) + 1
-                save_json_file(MUSIC_FILE, music_files)
-                return jsonify({
-                    'success': True,
-                    'plays': music['plays']
-                })
-        
-        return jsonify({'error': 'Music not found'}), 404
-        
-    except Exception as e:
-        return jsonify({'error': f'Play count failed: {str(e)}'}), 500
-
-@app.route('/delete-music/<music_id>', methods=['DELETE'])
-def delete_music(music_id):
-    """Delete music file"""
-    try:
-        music_files = load_json_file(MUSIC_FILE)
-        music_to_delete = None
-        
-        for i, music in enumerate(music_files):
-            if music['id'] == music_id:
-                music_to_delete = music_files.pop(i)
-                break
-        
-        if music_to_delete:
-            # Delete file from disk
-            file_path = os.path.join('uploads/music', music_to_delete['filename'])
-            if os.path.exists(file_path):
-                os.remove(file_path)
-            
-            save_json_file(MUSIC_FILE, music_files)
-            return jsonify({
-                'success': True,
-                'message': 'Music deleted successfully!'
-            })
-        
-        return jsonify({'error': 'Music not found'}), 404
-        
-    except Exception as e:
-        return jsonify({'error': f'Delete failed: {str(e)}'}), 500
-
 # ==================== FILE SERVING ROUTES ====================
-
-@app.route('/uploads/<path:filename>')
-def uploaded_file(filename):
-    """Serve uploaded files"""
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route('/uploads/photos/<filename>')
 def uploaded_photo(filename):
@@ -436,41 +374,14 @@ def uploaded_artwork(filename):
 
 # ==================== API ROUTES ====================
 
-@app.route('/api/countdown')
-def countdown_api():
-    """Birthday countdown API"""
-    # Nipa's birthday - September 3rd
-    birthday_date = "2025-09-03"
-    now = datetime.now()
-    birthday = datetime.strptime(birthday_date, "%Y-%m-%d")
-    
-    # If birthday has passed this year, set to next year
-    if birthday < now:
-        birthday = birthday.replace(year=now.year + 1)
-    
-    time_left = birthday - now
-    
-    return jsonify({
-        'birthday_date': birthday_date,
-        'days_left': time_left.days,
-        'hours_left': time_left.seconds // 3600,
-        'minutes_left': (time_left.seconds % 3600) // 60,
-        'seconds_left': time_left.seconds % 60,
-        'message': 'Countdown to Nipa\'s Birthday!',
-        'is_birthday': time_left.days == 0 and time_left.seconds < 86400
-    })
-
 @app.route('/api/stats')
 def get_stats():
-    """Get website statistics"""
+    """Get comprehensive website statistics"""
     try:
         gallery = load_json_file(GALLERY_FILE)
         messages = load_json_file(MESSAGES_FILE)
         artworks = load_json_file(ARTWORK_FILE)
         music_files = load_json_file(MUSIC_FILE)
-        
-        total_likes = sum(msg.get('likes', 0) for msg in messages)
-        total_plays = sum(music.get('plays', 0) for music in music_files)
         
         return jsonify({
             'success': True,
@@ -479,49 +390,17 @@ def get_stats():
                 'total_messages': len(messages),
                 'total_artworks': len(artworks),
                 'total_music': len(music_files),
-                'total_likes': total_likes,
-                'total_plays': total_plays,
+                'total_likes': sum(msg.get('likes', 0) for msg in messages) + 
+                              sum(photo.get('likes', 0) for photo in gallery),
+                'total_plays': sum(music.get('plays', 0) for music in music_files),
+                'total_storage': sum(photo.get('size', 0) for photo in gallery) + 
+                               sum(music.get('size', 0) for music in music_files),
                 'last_updated': datetime.now().isoformat()
             }
         })
         
     except Exception as e:
         return jsonify({'error': f'Stats failed: {str(e)}'}), 500
-
-@app.route('/api/birthday-wish', methods=['POST'])
-def send_birthday_wish():
-    """Send a special birthday wish"""
-    try:
-        data = request.get_json()
-        wish_text = data.get('wish', '').strip()
-        sender = data.get('sender', 'Anonymous').strip()
-        
-        if not wish_text:
-            return jsonify({'error': 'Wish cannot be empty'}), 400
-        
-        # Save as a special message
-        messages = load_json_file(MESSAGES_FILE)
-        wish_message = {
-            'id': str(uuid.uuid4()),
-            'message': f"🌟 Birthday Wish: {wish_text}",
-            'author': sender,
-            'timestamp': datetime.now().isoformat(),
-            'date_display': datetime.now().strftime('%B %d, %Y at %I:%M %p'),
-            'likes': 0,
-            'is_wish': True
-        }
-        
-        messages.append(wish_message)
-        save_json_file(MESSAGES_FILE, messages)
-        
-        return jsonify({
-            'success': True,
-            'message': 'Birthday wish sent successfully!',
-            'wish': wish_message
-        })
-        
-    except Exception as e:
-        return jsonify({'error': f'Wish failed: {str(e)}'}), 500
 
 # ==================== ERROR HANDLERS ====================
 
@@ -549,11 +428,11 @@ if __name__ == '__main__':
         if not os.path.exists(file_path):
             save_json_file(file_path, [])
     
-    print("🎂 Starting Nipa's Birthday Website...")
-    print("📸 Photo Gallery: Ready")
-    print("💌 Messages System: Ready") 
-    print("🎵 Music Player: Ready")
-    print("🎨 Art Studio: Ready")
-    print("✨ All systems ready!")
+    print("🎂 Starting Nipa's Enhanced Birthday Website...")
+    print("📸 Photo Gallery: Multiple uploads, server storage ✅")
+    print("💌 Messages System: Enhanced with likes ✅") 
+    print("🎵 Music Player: Auto-play birthday song ✅")
+    print("🎨 Art Studio: Server storage ✅")
+    print("✨ All enhanced features ready!")
     
     app.run(debug=True, host='0.0.0.0', port=5000)
