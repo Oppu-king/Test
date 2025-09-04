@@ -17,11 +17,11 @@ DEBUG = os.getenv('FLASK_ENV') != 'production'
 if not OPENROUTER_API_KEY:
     print("⚠️ Warning: OPENROUTER_API_KEY environment variable not set!")
 
-
 @app.route('/')
 def index():
     """Serve the main Nipa website"""
-    return render_template_string(HTML_TEMPLATE)
+    return render_template('index.html')
+
 
 @app.route('/api/chat', methods=['POST'])
 def chat_with_ai():
