@@ -6,11 +6,6 @@ import json
 from datetime import datetime, timedelta
 from flask import render_template
 
-@app.route('/')
-def index():
-    """Serve the main Nipa website"""
-    return render_template('index.html')
-
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
