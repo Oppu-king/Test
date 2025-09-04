@@ -1,9 +1,15 @@
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 import requests
 import json
 from datetime import datetime, timedelta
+from flask import render_template
+
+@app.route('/')
+def index():
+    """Serve the main Nipa website"""
+    return render_template('index.html')
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
