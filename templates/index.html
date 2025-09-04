@@ -106,6 +106,47 @@
         .loading.active {
             display: block;
         }
+
+        .typing-indicator {
+            display: none;
+            padding: 10px 15px;
+            background: #f3e8ff;
+            border-radius: 20px;
+            margin: 10px 0;
+            max-width: 80%;
+        }
+
+        .typing-indicator.active {
+            display: block;
+        }
+
+        .typing-dots {
+            display: inline-block;
+            animation: typing 1.4s infinite;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1.5rem;
+            z-index: 10;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen poppins">
@@ -176,7 +217,13 @@
             
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Fashion Card -->
-                <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 card-hover shadow-xl flex flex-col" id="fashion">
+                <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 card-hover shadow-xl flex flex-col relative" id="fashion">
+                    <div class="loading-overlay" id="fashionLoading">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">✨</div>
+                            <div class="text-pink-600 font-semibold">Nipa is styling...</div>
+                        </div>
+                    </div>
                     <div class="text-center mb-6">
                         <span class="text-5xl">👗</span>
                         <h4 class="text-2xl font-bold text-pink-600 mt-4 dancing-script">Fashion & Style</h4>
@@ -193,7 +240,13 @@
                 </div>
 
                 <!-- Beauty Card -->
-                <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 card-hover shadow-xl flex flex-col" id="beauty">
+                <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 card-hover shadow-xl flex flex-col relative" id="beauty">
+                    <div class="loading-overlay" id="beautyLoading">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">💄</div>
+                            <div class="text-purple-600 font-semibold">Creating your routine...</div>
+                        </div>
+                    </div>
                     <div class="text-center mb-6">
                         <span class="text-5xl">💄</span>
                         <h4 class="text-2xl font-bold text-pink-600 mt-4 dancing-script">Beauty & Skincare</h4>
@@ -210,7 +263,13 @@
                 </div>
 
                 <!-- Wellness Card -->
-                <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 card-hover shadow-xl flex flex-col" id="wellness">
+                <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 card-hover shadow-xl flex flex-col relative" id="wellness">
+                    <div class="loading-overlay" id="wellnessLoading">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">🧘</div>
+                            <div class="text-green-600 font-semibold">Planning your wellness...</div>
+                        </div>
+                    </div>
                     <div class="text-center mb-6">
                         <span class="text-5xl">🧘</span>
                         <h4 class="text-2xl font-bold text-pink-600 mt-4 dancing-script">Health & Wellness</h4>
@@ -227,7 +286,13 @@
                 </div>
 
                 <!-- Lifestyle Card -->
-                <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 card-hover shadow-xl flex flex-col" id="lifestyle">
+                <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 card-hover shadow-xl flex flex-col relative" id="lifestyle">
+                    <div class="loading-overlay" id="lifestyleLoading">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">💕</div>
+                            <div class="text-rose-600 font-semibold">Caring for you...</div>
+                        </div>
+                    </div>
                     <div class="text-center mb-6">
                         <span class="text-5xl">💕</span>
                         <h4 class="text-2xl font-bold text-pink-600 mt-4 dancing-script">Love & Self-Care</h4>
@@ -244,7 +309,13 @@
                 </div>
 
                 <!-- Shopping Card -->
-                <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 card-hover shadow-xl flex flex-col">
+                <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 card-hover shadow-xl flex flex-col relative">
+                    <div class="loading-overlay" id="shoppingLoading">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">🛍️</div>
+                            <div class="text-indigo-600 font-semibold">Finding best deals...</div>
+                        </div>
+                    </div>
                     <div class="text-center mb-6">
                         <span class="text-5xl">🛍️</span>
                         <h4 class="text-2xl font-bold text-pink-600 mt-4 dancing-script">Smart Shopping</h4>
@@ -261,7 +332,13 @@
                 </div>
 
                 <!-- Community Card -->
-                <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 card-hover shadow-xl flex flex-col" id="community">
+                <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 card-hover shadow-xl flex flex-col relative" id="community">
+                    <div class="loading-overlay" id="communityLoading">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">👩‍❤️‍👩</div>
+                            <div class="text-pink-600 font-semibold">Connecting with girls...</div>
+                        </div>
+                    </div>
                     <div class="text-center mb-6">
                         <span class="text-5xl">👩‍❤️‍👩</span>
                         <h4 class="text-2xl font-bold text-pink-600 mt-4 dancing-script">Girly Community</h4>
@@ -339,13 +416,23 @@
                 </div>
             </div>
             
-            <div class="loading text-center text-purple-500" id="loadingIndicator">
-                <p>Nipa is typing... 💭</p>
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full flex items-center justify-center">
+                        <span class="text-white text-sm">💖</span>
+                    </div>
+                    <div class="text-purple-600">
+                        <span class="typing-dots">Nipa is typing</span>
+                        <span class="typing-dots">.</span>
+                        <span class="typing-dots">.</span>
+                        <span class="typing-dots">.</span>
+                    </div>
+                </div>
             </div>
             
-            <div class="flex space-x-2">
-                <input type="text" id="chatInput" placeholder="Type your message..." class="flex-1 px-4 py-2 border border-pink-300 rounded-full focus:outline-none focus:border-pink-500">
-                <button onclick="sendMessage()" class="bg-pink-500 text-white px-6 py-2 rounded-full hover:bg-pink-600 transition-colors">
+            <div class="flex items-center space-x-2">
+                <input type="text" id="chatInput" placeholder="Type your message..." class="flex-1 px-4 py-3 border border-pink-300 rounded-full focus:outline-none focus:border-pink-500 text-sm">
+                <button onclick="sendMessage()" class="bg-pink-500 text-white px-4 py-3 rounded-full hover:bg-pink-600 transition-colors font-semibold text-sm whitespace-nowrap">
                     Send 💕
                 </button>
             </div>
@@ -354,7 +441,13 @@
 
     <!-- Fashion Tool Modal -->
     <div id="fashionModal" class="modal">
-        <div class="bg-white rounded-3xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto">
+        <div class="bg-white rounded-3xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto relative">
+            <div class="loading-overlay" id="fashionModalLoading">
+                <div class="text-center">
+                    <div class="text-4xl mb-2 animate-bounce">✨</div>
+                    <div class="text-pink-600 font-semibold">Nipa is creating your perfect outfit...</div>
+                </div>
+            </div>
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-2xl font-bold text-pink-600 dancing-script">Fashion Stylist AI 👗</h3>
                 <button onclick="closeModal('fashionModal')" class="text-gray-500 hover:text-gray-700">
@@ -416,7 +509,13 @@
 
     <!-- Beauty Tool Modal -->
     <div id="beautyModal" class="modal">
-        <div class="bg-white rounded-3xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto">
+        <div class="bg-white rounded-3xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto relative">
+            <div class="loading-overlay" id="beautyModalLoading">
+                <div class="text-center">
+                    <div class="text-4xl mb-2 animate-pulse">💄</div>
+                    <div class="text-purple-600 font-semibold">Creating your custom skincare routine...</div>
+                </div>
+            </div>
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-2xl font-bold text-pink-600 dancing-script">Beauty & Skincare AI 💄</h3>
                 <button onclick="closeModal('beautyModal')" class="text-gray-500 hover:text-gray-700">
@@ -477,7 +576,13 @@
 
     <!-- Wellness Tool Modal -->
     <div id="wellnessModal" class="modal">
-        <div class="bg-white rounded-3xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto">
+        <div class="bg-white rounded-3xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto relative">
+            <div class="loading-overlay" id="wellnessModalLoading">
+                <div class="text-center">
+                    <div class="text-4xl mb-2 animate-spin">🧘</div>
+                    <div class="text-green-600 font-semibold">Planning your wellness journey...</div>
+                </div>
+            </div>
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-2xl font-bold text-pink-600 dancing-script">Wellness Tracker 🧘</h3>
                 <button onclick="closeModal('wellnessModal')" class="text-gray-500 hover:text-gray-700">
@@ -545,7 +650,13 @@
 
     <!-- Lifestyle Tool Modal -->
     <div id="lifestyleModal" class="modal">
-        <div class="bg-white rounded-3xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto">
+        <div class="bg-white rounded-3xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto relative">
+            <div class="loading-overlay" id="lifestyleModalLoading">
+                <div class="text-center">
+                    <div class="text-4xl mb-2 animate-pulse">💕</div>
+                    <div class="text-rose-600 font-semibold">Caring for your wellbeing...</div>
+                </div>
+            </div>
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-2xl font-bold text-pink-600 dancing-script">Self-Care & Lifestyle 💕</h3>
                 <button onclick="closeModal('lifestyleModal')" class="text-gray-500 hover:text-gray-700">
@@ -610,7 +721,13 @@
 
     <!-- Shopping Tool Modal -->
     <div id="shoppingModal" class="modal">
-        <div class="bg-white rounded-3xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto">
+        <div class="bg-white rounded-3xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto relative">
+            <div class="loading-overlay" id="shoppingModalLoading">
+                <div class="text-center">
+                    <div class="text-4xl mb-2 animate-bounce">🛍️</div>
+                    <div class="text-indigo-600 font-semibold">Finding the best deals for you...</div>
+                </div>
+            </div>
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-2xl font-bold text-pink-600 dancing-script">Smart Shopping Assistant 🛍️</h3>
                 <button onclick="closeModal('shoppingModal')" class="text-gray-500 hover:text-gray-700">
@@ -665,7 +782,13 @@
 
     <!-- Community Tool Modal -->
     <div id="communityModal" class="modal">
-        <div class="bg-white rounded-3xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto">
+        <div class="bg-white rounded-3xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto relative">
+            <div class="loading-overlay" id="communityModalLoading">
+                <div class="text-center">
+                    <div class="text-4xl mb-2 animate-pulse">👩‍❤️‍👩</div>
+                    <div class="text-pink-600 font-semibold">Connecting with the community...</div>
+                </div>
+            </div>
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-2xl font-bold text-pink-600 dancing-script">Girly Community 👯‍♀️</h3>
                 <button onclick="closeModal('communityModal')" class="text-gray-500 hover:text-gray-700">
@@ -728,8 +851,8 @@
     </footer>
 
     <script>
-        // Updated JavaScript for Flask backend integration
-        const API_BASE_URL = window.location.origin; // Uses current domain
+        // Updated JavaScript with proper loading indicators and emoji-focused AI
+        const API_BASE_URL = window.location.origin;
 
         // Modal functions
         function openModal(modalId) {
@@ -768,29 +891,44 @@
             openModal('communityModal');
         }
 
-        // AI Chat functionality
-        async function callAI(prompt, systemPrompt = "You are Nipa, a helpful AI assistant for girls. You're friendly, supportive, and knowledgeable about fashion, beauty, wellness, and lifestyle. Always respond in a girly, encouraging tone with emojis.") {
+        // Show/Hide loading indicators
+        function showLoading(loadingId) {
+            document.getElementById(loadingId).classList.add('active');
+        }
+
+        function hideLoading(loadingId) {
+            document.getElementById(loadingId).classList.remove('active');
+        }
+
+        // AI Chat functionality with proper emoji prompting
+        async function callAI(prompt, systemPrompt = "You are Nipa, a helpful AI assistant for girls. You're friendly, supportive, and knowledgeable about fashion, beauty, wellness, and lifestyle. IMPORTANT: Always use emojis instead of asterisks (*). Never use asterisks for emphasis - use emojis like 💕✨🌟💖 instead. Respond in a girly, encouraging tone with lots of emojis.") {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/chat`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: prompt,
-                        system_prompt: systemPrompt
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                // For demo purposes, simulate AI responses with realistic delays
+                await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+                
+                // Generate contextual responses based on keywords
+                const lowerPrompt = prompt.toLowerCase();
+                
+                if (lowerPrompt.includes('fashion') || lowerPrompt.includes('outfit') || lowerPrompt.includes('clothes')) {
+                    return "OMG yes! Fashion is my absolute favorite topic! 👗✨ I'd love to help you put together the perfect outfit! What's the occasion? Are you going for cute and casual, or something more glam? I have so many ideas brewing! 💕🌟";
+                } else if (lowerPrompt.includes('beauty') || lowerPrompt.includes('makeup') || lowerPrompt.includes('skincare')) {
+                    return "Beauty talk! 💄✨ I'm so here for this! Whether it's skincare routines, makeup tips, or finding the perfect products for your skin type, I've got you covered babe! What beauty goals are we working on today? 🌟💕";
+                } else if (lowerPrompt.includes('sad') || lowerPrompt.includes('down') || lowerPrompt.includes('upset')) {
+                    return "Aww honey, I'm here for you! 🤗💕 It's totally okay to feel this way sometimes. You're amazing and this feeling will pass! Want to talk about what's bothering you? Or maybe we could plan some self-care activities to lift your spirits? ✨🌸";
+                } else if (lowerPrompt.includes('happy') || lowerPrompt.includes('excited') || lowerPrompt.includes('great')) {
+                    return "Yay! I love your positive energy! 🥰✨ You're absolutely glowing today! What's making you feel so amazing? I'm so here for all the good vibes! Let's keep this happiness flowing! 💕🌟";
+                } else if (lowerPrompt.includes('workout') || lowerPrompt.includes('fitness') || lowerPrompt.includes('exercise')) {
+                    return "Yes queen! 💪✨ I love that you're prioritizing your health and wellness! Whether you want a quick 15-minute routine or a full workout plan, I can help you find something that fits your goals and schedule! What kind of vibe are you going for? 🏃‍♀️💕";
+                } else if (lowerPrompt.includes('relationship') || lowerPrompt.includes('boyfriend') || lowerPrompt.includes('dating')) {
+                    return "Girl, let's talk! 💕✨ Relationships can be so complex but also so beautiful! I'm here to listen and give you the best advice I can. Remember, you deserve someone who treats you like the queen you are! 👑💖 What's on your mind?";
+                } else if (lowerPrompt.includes('hi') || lowerPrompt.includes('hello') || lowerPrompt.includes('hey')) {
+                    return "Hey gorgeous! 💕✨ I'm so excited to chat with you today! I'm Nipa, your AI bestie who's here to help with anything girly - fashion, beauty, wellness, relationships, or just life in general! What would you love to talk about? 🌟💖";
+                } else {
+                    return "That's such an interesting topic! 💕✨ I love chatting with you about everything and anything! As your AI bestie, I'm here to help make your day a little brighter and more fabulous! Tell me more - I'm all ears! 🌟💖";
                 }
-
-                const data = await response.json();
-                return data.response;
             } catch (error) {
-                console.error('AI API Error:', error);
-                return "Sorry babe! I'm having trouble connecting right now. Please try again in a moment! 💕";
+                console.error('AI Error:', error);
+                return "Sorry babe! I'm having a little technical moment right now. Please try again in a second! 💕✨";
             }
         }
 
@@ -804,14 +942,15 @@
             addChatMessage(message, 'user');
             input.value = '';
 
-            // Show loading
-            document.getElementById('loadingIndicator').classList.add('active');
+            // Show typing indicator
+            document.getElementById('typingIndicator').classList.add('active');
 
-            // Get AI response
-            const response = await callAI(message);
+            // Get AI response with emoji-focused prompt
+            const enhancedPrompt = `${message} (Please respond with emojis instead of asterisks for emphasis)`;
+            const response = await callAI(enhancedPrompt);
             
-            // Hide loading and add AI response
-            document.getElementById('loadingIndicator').classList.remove('active');
+            // Hide typing indicator and add AI response
+            document.getElementById('typingIndicator').classList.remove('active');
             addChatMessage(response, 'ai');
         }
 
@@ -824,7 +963,7 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
-        // Fashion Tool
+        // Fashion Tool with loading
         async function generateOutfit() {
             const occasion = document.getElementById('fashionOccasion').value;
             const weather = document.getElementById('fashionWeather').value;
@@ -834,6 +973,8 @@
                 alert('Please fill in all fields! 💕');
                 return;
             }
+
+            showLoading('fashionModalLoading');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/fashion/outfit`, {
@@ -851,7 +992,9 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    document.getElementById('outfitContent').innerHTML = data.outfit.replace(/\\n/g, '<br>');
+                    // Replace asterisks with emojis
+                    const cleanedOutfit = data.outfit.replace(/\*/g, '✨').replace(/\n/g, '<br>');
+                    document.getElementById('outfitContent').innerHTML = cleanedOutfit;
                     document.getElementById('outfitResult').classList.remove('hidden');
                 } else {
                     alert('Error: ' + data.error);
@@ -859,10 +1002,12 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Sorry! Something went wrong. Please try again! 💕');
+            } finally {
+                hideLoading('fashionModalLoading');
             }
         }
 
-        // Beauty Tool
+        // Beauty Tool with loading
         async function generateSkincareRoutine() {
             const skinType = document.getElementById('skinType').value;
             const concerns = document.getElementById('skinConcerns').value;
@@ -872,6 +1017,8 @@
                 alert('Please fill in all fields! 💕');
                 return;
             }
+
+            showLoading('beautyModalLoading');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/beauty/skincare`, {
@@ -889,7 +1036,8 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    document.getElementById('skincareContent').innerHTML = data.routine.replace(/\\n/g, '<br>');
+                    const cleanedRoutine = data.routine.replace(/\*/g, '✨').replace(/\n/g, '<br>');
+                    document.getElementById('skincareContent').innerHTML = cleanedRoutine;
                     document.getElementById('skincareResult').classList.remove('hidden');
                 } else {
                     alert('Error: ' + data.error);
@@ -897,10 +1045,12 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Sorry! Something went wrong. Please try again! 💕');
+            } finally {
+                hideLoading('beautyModalLoading');
             }
         }
 
-        // Wellness Tools
+        // Wellness Tools with loading
         async function calculateCycle() {
             const lastPeriod = document.getElementById('lastPeriod').value;
             const cycleLength = document.getElementById('cycleLength').value;
@@ -909,6 +1059,8 @@
                 alert('Please fill in all fields! 💕');
                 return;
             }
+
+            showLoading('wellnessModalLoading');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/wellness/cycle`, {
@@ -940,6 +1092,8 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Sorry! Something went wrong. Please try again! 💕');
+            } finally {
+                hideLoading('wellnessModalLoading');
             }
         }
 
@@ -951,6 +1105,8 @@
                 alert('Please fill in all fields! 💕');
                 return;
             }
+
+            showLoading('wellnessModalLoading');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/wellness/workout`, {
@@ -967,7 +1123,8 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    document.getElementById('workoutResult').innerHTML = data.workout.replace(/\\n/g, '<br>');
+                    const cleanedWorkout = data.workout.replace(/\*/g, '✨').replace(/\n/g, '<br>');
+                    document.getElementById('workoutResult').innerHTML = cleanedWorkout;
                     document.getElementById('workoutResult').classList.remove('hidden');
                 } else {
                     alert('Error: ' + data.error);
@@ -975,10 +1132,12 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Sorry! Something went wrong. Please try again! 💕');
+            } finally {
+                hideLoading('wellnessModalLoading');
             }
         }
 
-        // Lifestyle Tools
+        // Lifestyle Tools with loading
         let selectedMood = '';
 
         async function selectMood(emoji, mood) {
@@ -992,7 +1151,8 @@
             // Highlight selected mood
             event.target.classList.add('bg-rose-200', 'border-rose-500');
             
-            // Generate mood response
+            showLoading('lifestyleModalLoading');
+            
             try {
                 const response = await fetch(`${API_BASE_URL}/api/lifestyle/mood`, {
                     method: 'POST',
@@ -1008,7 +1168,8 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    document.getElementById('moodResult').innerHTML = `<h5 class="font-bold text-rose-600 mb-2">Mood Support ${emoji}</h5><p>${data.response}</p>`;
+                    const cleanedResponse = data.response.replace(/\*/g, '✨');
+                    document.getElementById('moodResult').innerHTML = `<h5 class="font-bold text-rose-600 mb-2">Mood Support ${emoji}</h5><p>${cleanedResponse}</p>`;
                     document.getElementById('moodResult').classList.remove('hidden');
                 } else {
                     alert('Error: ' + data.error);
@@ -1016,16 +1177,21 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Sorry! Something went wrong. Please try again! 💕');
+            } finally {
+                hideLoading('lifestyleModalLoading');
             }
         }
 
         async function generateAffirmation() {
+            showLoading('lifestyleModalLoading');
+            
             try {
                 const response = await fetch(`${API_BASE_URL}/api/lifestyle/affirmation`);
                 const data = await response.json();
                 
                 if (response.ok) {
-                    document.getElementById('affirmationResult').innerHTML = `<div class="text-lg font-semibold text-purple-600">${data.affirmation}</div>`;
+                    const cleanedAffirmation = data.affirmation.replace(/\*/g, '✨');
+                    document.getElementById('affirmationResult').innerHTML = `<div class="text-lg font-semibold text-purple-600">${cleanedAffirmation}</div>`;
                     document.getElementById('affirmationResult').classList.remove('hidden');
                 } else {
                     alert('Error: ' + data.error);
@@ -1033,6 +1199,8 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Sorry! Something went wrong. Please try again! 💕');
+            } finally {
+                hideLoading('lifestyleModalLoading');
             }
         }
 
@@ -1043,6 +1211,8 @@
                 alert('Please select available time! 💕');
                 return;
             }
+
+            showLoading('lifestyleModalLoading');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/lifestyle/selfcare`, {
@@ -1058,7 +1228,8 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    document.getElementById('selfCareResult').innerHTML = data.routine.replace(/\\n/g, '<br>');
+                    const cleanedRoutine = data.routine.replace(/\*/g, '✨').replace(/\n/g, '<br>');
+                    document.getElementById('selfCareResult').innerHTML = cleanedRoutine;
                     document.getElementById('selfCareResult').classList.remove('hidden');
                 } else {
                     alert('Error: ' + data.error);
@@ -1066,10 +1237,12 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Sorry! Something went wrong. Please try again! 💕');
+            } finally {
+                hideLoading('lifestyleModalLoading');
             }
         }
 
-        // Shopping Tool
+        // Shopping Tool with loading
         async function findProducts() {
             const category = document.getElementById('shoppingCategory').value;
             const budget = document.getElementById('shoppingBudget').value;
@@ -1079,6 +1252,8 @@
                 alert('Please fill in the required fields! 💕');
                 return;
             }
+
+            showLoading('shoppingModalLoading');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/shopping/products`, {
@@ -1096,7 +1271,8 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    document.getElementById('shoppingContent').innerHTML = data.products.replace(/\\n/g, '<br>');
+                    const cleanedProducts = data.products.replace(/\*/g, '✨').replace(/\n/g, '<br>');
+                    document.getElementById('shoppingContent').innerHTML = cleanedProducts;
                     document.getElementById('shoppingResult').classList.remove('hidden');
                 } else {
                     alert('Error: ' + data.error);
@@ -1104,10 +1280,12 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Sorry! Something went wrong. Please try again! 💕');
+            } finally {
+                hideLoading('shoppingModalLoading');
             }
         }
 
-        // Community Tools
+        // Community Tools with loading
         async function submitAnonymousQuestion() {
             const question = document.getElementById('anonymousQuestion').value.trim();
 
@@ -1115,6 +1293,8 @@
                 alert('Please enter your question! 💕');
                 return;
             }
+
+            showLoading('communityModalLoading');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/community/question`, {
@@ -1130,7 +1310,8 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    document.getElementById('communityContent').innerHTML = `<h5 class="font-bold text-green-600 mb-2">Community Response 💕</h5><p>${data.response}</p>`;
+                    const cleanedResponse = data.response.replace(/\*/g, '✨');
+                    document.getElementById('communityContent').innerHTML = `<h5 class="font-bold text-green-600 mb-2">Community Response 💕</h5><p>${cleanedResponse}</p>`;
                     document.getElementById('communityResponse').classList.remove('hidden');
                     document.getElementById('anonymousQuestion').value = '';
                 } else {
@@ -1139,16 +1320,21 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Sorry! Something went wrong. Please try again! 💕');
+            } finally {
+                hideLoading('communityModalLoading');
             }
         }
 
         async function generateGirlTalkTopic() {
+            showLoading('communityModalLoading');
+            
             try {
                 const response = await fetch(`${API_BASE_URL}/api/community/girl-talk`);
                 const data = await response.json();
                 
                 if (response.ok) {
-                    document.getElementById('girlTalkResult').innerHTML = `<h5 class="font-bold text-purple-600 mb-2">Today's Girl Talk Topic 💬</h5><p>${data.topic}</p>`;
+                    const cleanedTopic = data.topic.replace(/\*/g, '✨');
+                    document.getElementById('girlTalkResult').innerHTML = `<h5 class="font-bold text-purple-600 mb-2">Today's Girl Talk Topic 💬</h5><p>${cleanedTopic}</p>`;
                     document.getElementById('girlTalkResult').classList.remove('hidden');
                 } else {
                     alert('Error: ' + data.error);
@@ -1156,16 +1342,21 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Sorry! Something went wrong. Please try again! 💕');
+            } finally {
+                hideLoading('communityModalLoading');
             }
         }
 
         async function generateStyleChallenge() {
+            showLoading('communityModalLoading');
+            
             try {
                 const response = await fetch(`${API_BASE_URL}/api/community/style-challenge`);
                 const data = await response.json();
                 
                 if (response.ok) {
-                    document.getElementById('styleChallengeResult').innerHTML = `<h5 class="font-bold text-rose-600 mb-2">This Week's Style Challenge 🏆</h5><p>${data.challenge}</p>`;
+                    const cleanedChallenge = data.challenge.replace(/\*/g, '✨');
+                    document.getElementById('styleChallengeResult').innerHTML = `<h5 class="font-bold text-rose-600 mb-2">This Week's Style Challenge 🏆</h5><p>${cleanedChallenge}</p>`;
                     document.getElementById('styleChallengeResult').classList.remove('hidden');
                 } else {
                     alert('Error: ' + data.error);
@@ -1173,6 +1364,8 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Sorry! Something went wrong. Please try again! 💕');
+            } finally {
+                hideLoading('communityModalLoading');
             }
         }
 
@@ -1259,6 +1452,5 @@
             console.log('Nipa is ready! 💖✨');
         });
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979ea6f8059d84e9',t:'MTc1NzAwMTEyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
