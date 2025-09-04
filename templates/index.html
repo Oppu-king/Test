@@ -430,9 +430,9 @@
                 </div>
             </div>
             
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-2 mt-4">
                 <input type="text" id="chatInput" placeholder="Type your message..." class="flex-1 px-4 py-3 border border-pink-300 rounded-full focus:outline-none focus:border-pink-500 text-sm">
-                <button onclick="sendMessage()" class="bg-pink-500 text-white px-4 py-3 rounded-full hover:bg-pink-600 transition-colors font-semibold text-sm whitespace-nowrap">
+                <button onclick="sendMessage()" class="bg-pink-500 text-white px-6 py-3 rounded-full hover:bg-pink-600 transition-colors font-semibold text-sm flex-shrink-0">
                     Send 💕
                 </button>
             </div>
@@ -900,32 +900,31 @@
             document.getElementById(loadingId).classList.remove('active');
         }
 
-        // AI Chat functionality with proper emoji prompting
+        // Real AI Chat functionality using OpenRouter API
         async function callAI(prompt, systemPrompt = "You are Nipa, a helpful AI assistant for girls. You're friendly, supportive, and knowledgeable about fashion, beauty, wellness, and lifestyle. IMPORTANT: Always use emojis instead of asterisks (*). Never use asterisks for emphasis - use emojis like 💕✨🌟💖 instead. Respond in a girly, encouraging tone with lots of emojis.") {
             try {
-                // For demo purposes, simulate AI responses with realistic delays
-                await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
-                
-                // Generate contextual responses based on keywords
-                const lowerPrompt = prompt.toLowerCase();
-                
-                if (lowerPrompt.includes('fashion') || lowerPrompt.includes('outfit') || lowerPrompt.includes('clothes')) {
-                    return "OMG yes! Fashion is my absolute favorite topic! 👗✨ I'd love to help you put together the perfect outfit! What's the occasion? Are you going for cute and casual, or something more glam? I have so many ideas brewing! 💕🌟";
-                } else if (lowerPrompt.includes('beauty') || lowerPrompt.includes('makeup') || lowerPrompt.includes('skincare')) {
-                    return "Beauty talk! 💄✨ I'm so here for this! Whether it's skincare routines, makeup tips, or finding the perfect products for your skin type, I've got you covered babe! What beauty goals are we working on today? 🌟💕";
-                } else if (lowerPrompt.includes('sad') || lowerPrompt.includes('down') || lowerPrompt.includes('upset')) {
-                    return "Aww honey, I'm here for you! 🤗💕 It's totally okay to feel this way sometimes. You're amazing and this feeling will pass! Want to talk about what's bothering you? Or maybe we could plan some self-care activities to lift your spirits? ✨🌸";
-                } else if (lowerPrompt.includes('happy') || lowerPrompt.includes('excited') || lowerPrompt.includes('great')) {
-                    return "Yay! I love your positive energy! 🥰✨ You're absolutely glowing today! What's making you feel so amazing? I'm so here for all the good vibes! Let's keep this happiness flowing! 💕🌟";
-                } else if (lowerPrompt.includes('workout') || lowerPrompt.includes('fitness') || lowerPrompt.includes('exercise')) {
-                    return "Yes queen! 💪✨ I love that you're prioritizing your health and wellness! Whether you want a quick 15-minute routine or a full workout plan, I can help you find something that fits your goals and schedule! What kind of vibe are you going for? 🏃‍♀️💕";
-                } else if (lowerPrompt.includes('relationship') || lowerPrompt.includes('boyfriend') || lowerPrompt.includes('dating')) {
-                    return "Girl, let's talk! 💕✨ Relationships can be so complex but also so beautiful! I'm here to listen and give you the best advice I can. Remember, you deserve someone who treats you like the queen you are! 👑💖 What's on your mind?";
-                } else if (lowerPrompt.includes('hi') || lowerPrompt.includes('hello') || lowerPrompt.includes('hey')) {
-                    return "Hey gorgeous! 💕✨ I'm so excited to chat with you today! I'm Nipa, your AI bestie who's here to help with anything girly - fashion, beauty, wellness, relationships, or just life in general! What would you love to talk about? 🌟💖";
-                } else {
-                    return "That's such an interesting topic! 💕✨ I love chatting with you about everything and anything! As your AI bestie, I'm here to help make your day a little brighter and more fabulous! Tell me more - I'm all ears! 🌟💖";
+                const response = await fetch(`${API_BASE_URL}/api/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: prompt,
+                        system_prompt: systemPrompt
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                return data.response;
             } catch (error) {
                 console.error('AI Error:', error);
                 return "Sorry babe! I'm having a little technical moment right now. Please try again in a second! 💕✨";
@@ -1452,5 +1451,5 @@
             console.log('Nipa is ready! 💖✨');
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979ea6f8059d84e9',t:'MTc1NzAwMTEyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979ec0e4e76d47e3',t:'MTc1NzAwMjE5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
