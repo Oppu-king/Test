@@ -2,25 +2,22 @@ services:
   - type: web
     name: nipa-app
     env: python
-    plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: python app.py
+    startCommand: gunicorn app:app
     envVars:
       - key: OPENROUTER_API_KEY
         sync: false
       - key: FLASK_ENV
         value: production
-      - key: PORT
-        value: 5000
-    healthCheckPath: /
+      - key: PYTHONPATH
+        value: .
+    healthCheckPath: /health
+    autoDeploy: true
     disk:
       name: nipa-disk
       mountPath: /opt/render/project/src
       sizeGB: 1
-    autoDeploy: true
-    branch: main
-    rootDir: .
-    region: oregon
     scaling:
       minInstances: 1
-      maxInstances: 1
+      maxInstances: 3
+    plan: starter
